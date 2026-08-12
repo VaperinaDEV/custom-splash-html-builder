@@ -1,0 +1,5 @@
+en:
+  site_settings:
+    custom_splash_html_builder_enabled: "Enable the custom splash screen HTML/CSS builder. When off, the default Discourse splash screen is used regardless of the fields below."
+    splash_custom_html: "Custom HTML markup injected into the splash screen's .splash-logo-container. Leave empty to use the default Discourse splash."
+    splash_custom_css: "Custom CSS (keyframes, layer styles, etc.) injected into the splash screen's <style> block. Only used when splash_custom_html is also set."

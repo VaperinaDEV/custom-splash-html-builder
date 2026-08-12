@@ -1,0 +1,153 @@
+<%- if SiteSetting.custom_splash_html_builder_enabled && SiteSetting.splash_custom_html.present? %>
+
+  <%# ------------------------------------------------------------------ %>
+  <%# Custom, admin-defined splash: fully standalone, minimal branch.   %>
+  <%# If this setting is empty, the `else` branch below always runs  %>
+  <%# the current core _discourse_splash.html.erb located on disk.      %>
+  <%# ------------------------------------------------------------------ %>
+
+  <section id="d-splash">
+    <style>
+      html {
+        overflow: hidden !important;
+      }
+
+      <%- if dark_color_scheme? %>
+        html {
+          background-color: #<%= light_color_hex_for_name("secondary") %>;
+        }
+
+        #d-splash {
+          --primary: #<%= light_color_hex_for_name("primary") %>;
+          --secondary: #<%= light_color_hex_for_name("secondary") %>;
+          --tertiary: #<%= light_color_hex_for_name("tertiary") %>;
+        }
+      <%- elsif forced_light_mode? %>
+        html {
+          background-color: #<%= light_color_hex_for_name("secondary") %>;
+        }
+
+        #d-splash {
+          --primary: #<%= light_color_hex_for_name("primary") %>;
+          --secondary: #<%= light_color_hex_for_name("secondary") %>;
+          --tertiary: #<%= light_color_hex_for_name("tertiary") %>;
+        }
+      <%- elsif forced_dark_mode? %>
+        html {
+          background-color: #<%= dark_color_hex_for_name("secondary") %>;
+        }
+
+        #d-splash {
+          --primary: #<%= dark_color_hex_for_name("primary") %>;
+          --secondary: #<%= dark_color_hex_for_name("secondary") %>;
+          --tertiary: #<%= dark_color_hex_for_name("tertiary") %>;
+        }
+      <%- else %>
+        /* user picked a light scheme and also enabled a dark scheme */
+        @media (prefers-color-scheme: light) {
+          html {
+            background-color: #<%= light_color_hex_for_name("secondary") %>;
+          }
+
+          #d-splash {
+            --primary: #<%= light_color_hex_for_name("primary") %>;
+            --secondary: #<%= light_color_hex_for_name("secondary") %>;
+            --tertiary: #<%= light_color_hex_for_name("tertiary") %>;
+          }
+        }
+
+        @media (prefers-color-scheme: dark) {
+          html {
+            background-color: #<%= dark_color_hex_for_name("secondary") %>;
+          }
+
+          #d-splash {
+            --primary: #<%= dark_color_hex_for_name("primary") %>;
+            --secondary: #<%= dark_color_hex_for_name("secondary") %>;
+            --tertiary: #<%= dark_color_hex_for_name("tertiary") %>;
+          }
+        }
+      <%- end %>
+
+      #d-splash {
+        display: grid;
+        place-items: center;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100svh;
+        z-index: 1001;
+      }
+
+      #d-splash .preloader-image {
+        width: 700px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100svh;
+      }
+
+      @media (max-width: 700px) {
+        #d-splash .preloader-image {
+          width: 320px;
+        }
+      }
+
+      #d-splash .splash-logo-container {
+        position: relative;
+        width: min(250px, 60vw);
+        height: min(150px, 25vh);
+      }
+
+      #d-splash svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      <%- if SiteSetting.splash_custom_css.present? %>
+        <%= raw(SiteSetting.splash_custom_css) %>
+      <%- end %>
+    </style>
+
+    <div class="preloader-image" elementtiming="discourse-splash-visible">
+      <div class="splash-logo-container">
+        <%= raw(SiteSetting.splash_custom_html) %>
+      </div>
+    </div>
+
+    <script nonce="<%= csp_nonce_placeholder %>">
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><!-- LCP candidate image ${".".repeat(5000)} --></svg>`;
+      document.querySelector("#d-splash .preloader-image").style.backgroundImage = `url('data:image/svg+xml,${svg}')`
+    </script>
+
+    <noscript>
+      <style>
+        html { overflow-y: revert !important; }
+        #d-splash { display: none; }
+      </style>
+    </noscript>
+  </section>
+
+<%- else %>
+
+  <%#
+    No custom content specified -> rendering the original, current core
+    _discourse_splash.html.erb directly from disk, NOT through the standard
+    view path resolution (which would find your overridden file again ->
+    resulting in infinite recursion).
+    This ensures it stays automatically up to date even after a Discourse
+    update, without code duplication.
+
+    If a future Discourse version moves or renames this file, we silently
+    render nothing here rather than throwing a 500 error on every page load.
+  %>
+  <%- core_splash_path = Rails.root.join("app", "views", "common", "_discourse_splash.html.erb") %>
+  <%- if File.exist?(core_splash_path) %>
+    <%= render inline: File.read(core_splash_path), type: :erb %>
+  <%- end %>
+
+<%- end %>

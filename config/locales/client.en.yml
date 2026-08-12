@@ -1,0 +1,12 @@
+en:
+  js:
+    custom_splash_html_builder:
+      title: "Splash HTML builder"
+      editor_title: "Editor"
+      editor_description: "Edit the splash HTML and CSS"
+      hint: "Edit the splash_custom_html and splash_custom_css site settings below. Leave both empty to fall back to the default Discourse splash screen."
+      html_label: "Custom HTML"
+      css_label: "Custom CSS"
+      save: "Save"
+      saving: "Saving..."
+      saved: "Saved"

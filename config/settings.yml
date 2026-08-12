@@ -1,0 +1,12 @@
+plugins:
+  custom_splash_html_builder_enabled:
+    default: true
+    client: false
+  splash_custom_html:
+    default: ""
+    textarea: true
+    client: false
+  splash_custom_css:
+    default: ""
+    textarea: true
+    client: false
