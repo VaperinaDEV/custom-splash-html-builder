@@ -37,7 +37,7 @@ export default <template>
         @action={{@controller.save}}
         @translatedLabel={{@controller.saveLabel}}
         @disabled={{@controller.saving}}
-        class="btn-primary splash-custom-html-builder__save-btn"
+        class="btn-primary custom-splash-html-builder__save-btn"
       />
 
       {{#if @controller.savedAt}}
