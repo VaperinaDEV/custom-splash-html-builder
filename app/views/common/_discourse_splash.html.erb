@@ -6,7 +6,17 @@
   <%# the current core _discourse_splash.html.erb located on disk.      %>
   <%# ------------------------------------------------------------------ %>
 
-  <section id="d-splash">
+  <%#
+    Server-side, actually computed scheme - "dark" or
+    "light" only if the site mode is NOT dependent on OS preference (forced
+    modes, or if only one scheme is set). If both schemes
+    are enabled and the OS decides, it will be left blank and your CSS
+    prefers-color-scheme media query will work correctly.
+  %>
+
+  <%- splash_forced_scheme = (dark_color_scheme? || forced_dark_mode?) ? "dark" : (forced_light_mode? ? "light" : nil) %>
+
+  <section id="d-splash"<%= " data-color-scheme=\"#{splash_forced_scheme}\"".html_safe if splash_forced_scheme %>>
     <style>
       html {
         overflow: hidden !important;
